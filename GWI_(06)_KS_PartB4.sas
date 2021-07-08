@@ -1,0 +1,10 @@
+data GWI_PartB4; set GWI_PartB3;
+	KS_GWI =0;
+		label KS_GWI = "Kansas Gulf War Illness Caseness Indicator";
+		format KS_GWI l_yesno.;
+	if KS_Excl = 0 & KS_GWI_ModMult_SC = 1 then KS_GWI = 1;	 *Veterans with no exclusionary criteria who fit the symptoms criteria are marked 1; 
+		else if KS_Excl = 1 & KS_GWI_ModMult_SC = 1 then KS_GWI = 0; *Veterans with exclusionary criteria who fit the symptoms criteria are marked 0;
+		else if KS_Excl = 1 & KS_GWI_ModMult_SC = 0 then KS_GWI = 0; *Veterans with exclusionary criteria who don't fit the symptoms criteria are marked 0;
+		else if KS_Excl = 0 & KS_GWI_ModMult_SC = 0 then KS_GWI = 0; *Veterans with no exclusionary criteria who don't fit the symptoms criteria are marked 0;
+		else KS_GWI = . ;											  *All other veterans are marked missing;
+run;

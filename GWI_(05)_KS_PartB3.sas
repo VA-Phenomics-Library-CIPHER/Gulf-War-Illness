@@ -1,0 +1,15 @@
+data GWI_PartB3; set GWI_PartB2;
+	KS_GWI_ModMult_SC=.;
+		label KS_GWI_ModMult_SC = "Meets the Kansas GWI Symptom Criteria";
+	%let  KS_domains = KS_Fatigue_ModMult, KS_Pain_ModMult, KS_Mood_ModMult, KS_GI_ModMult, KS_Resp_ModMult, KS_Skin_ModMult	;
+	KS_domains_Yes = SUM(&KS_domains);	 *number of domains that are endorsed as moderate/severe or multiple;
+	if KS_domains_Yes = . then KS_domains_Yes = 0; *if all are missing, the sum will be missing, but we want it to be zero;
+	label KS_domains_Yes = "Numer of Kansas domains endorsed as yes";
+	KS_domains_Miss = NMISS(&KS_domains);  *number of domains that could not be determined as Y/N for moderate/severe or multiple;
+	label KS_domains_Miss = "Numer of Kansas domains that cannot be determined as yes or no";
+	KS_domains_No = 6 - KS_domains_Yes - KS_domains_Miss; *Number of domains that are endorsed as not moderare/severe or multiple;
+	label KS_domains_No = "Numer of Kansas domains endorsed as no";
+	if KS_domains_Yes>= 3 then	KS_GWI_ModMult_SC=1; * IFF 3 domains marked yes then GWI caseness is yes;
+		else if  KS_domains_No >= 4 then KS_GWI_ModMult_SC = 0;	*IFF there are at least 4 No domains, the GWI caseness is no;
+		else KS_GWI_ModMult_SC = .; *otherwise we don't know enough to decide;
+run;
